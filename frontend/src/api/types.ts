@@ -1,0 +1,15 @@
+export type Owner = { email: string };
+export type GoogleStatus = { connected: boolean; reconnect_required: boolean; search_console_site: string | null; ga4_property_id: string | null };
+export type SearchProperty = { site_url: string; permission_level: string };
+export type GA4Property = { property_id: string; display_name: string; account_name: string | null };
+export type PropertyList = { search_console: SearchProperty[]; ga4: GA4Property[]; warnings: string[] };
+export type ReportingSettings = { site_url: string | null; search_console_site: string | null; ga4_property_id: string | null; cta_event: string | null; invite_submit_event: string | null };
+export type MetricPoint = { date: string; metric: string; value: number; weight: number };
+export type MetricDelta = { metric: string; current_value: number; previous_value: number; absolute_change: number; percent_change: number | null; status: "comparable" | "no_baseline" };
+export type Evidence = { id: string; metric: string; value: number | string | boolean | null; period: string; source: string; label: string | null };
+export type Finding = { code: string; title: string; summary: string; source: string; evidence: Evidence[]; limitations: string[] };
+export type Recommendation = { finding: Finding; evidence: Evidence[]; suggested_action: string; measurement: string; confidence: "high" | "medium" | "low"; limitations: string[] };
+export type Funnel = { cta_clicks: number | null; invite_submissions: number | null; status: "ready" | "setup_needed" | "incomplete"; warning: string | null };
+export type ReportSummary = { id: string; created_at: string; date_range: string; status: "ready" | "partial"; finding_count: number; source_timestamps: Record<string, string>; warning: string | null };
+export type ReportDetail = ReportSummary & { metrics: MetricPoint[]; comparison: MetricDelta[]; findings: Finding[]; recommendations: Recommendation[]; funnel: Funnel | null };
+export type ChatAnswer = { answer: string; evidence_ids: string[]; report_id: string };
