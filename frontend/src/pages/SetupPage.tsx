@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../api/client";
 import type { GoogleStatus, PropertyList, ReportingSettings } from "../api/types";
 import { ConnectionStatus } from "../components/ConnectionStatus";
@@ -9,15 +9,18 @@ export function SetupPage({ status, onRefresh, onReport }: { status: GoogleStatu
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+  const connectInProgress = useRef(false);
   useEffect(() => {
     if (!status?.connected) return;
     Promise.all([api.properties(), api.settings()]).then(([list, current]) => { setProperties(list); setSettings(current); }).catch((e: Error) => setError(e.message));
   }, [status?.connected]);
   const edit = (key: keyof ReportingSettings, value: string) => setSettings((current) => ({ ...current, [key]: value || null }));
   async function connect() {
+    if (connectInProgress.current) return;
+    connectInProgress.current = true;
     setBusy(true); setError("");
     try { window.location.assign((await api.connectGoogle()).authorization_url); }
-    catch (e) { setError((e as Error).message); setBusy(false); }
+    catch (e) { setError((e as Error).message); setBusy(false); connectInProgress.current = false; }
   }
   async function save() {
     setBusy(true); setError(""); setSaved(false);

@@ -30,6 +30,20 @@ describe("private dashboard", () => {
     expect(screen.getByText(/one configured owner account/i)).toBeInTheDocument();
   });
 
+  it("starts only one Google OAuth request when sign-in is clicked repeatedly", async () => {
+    vi.mocked(api.me).mockRejectedValue(new Error("Request failed (401)"));
+    const connect = vi.spyOn(api, "connectGoogle").mockRejectedValue(new Error("Temporary OAuth error"));
+    render(<App />);
+    const button = await screen.findByRole("button", { name: "Sign in with Google" });
+
+    fireEvent.click(button);
+    fireEvent.click(button);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent("Temporary OAuth error");
+    expect(connect).toHaveBeenCalledOnce();
+    expect(button).toBeEnabled();
+  });
+
   it("shows Google connected and reconnect-required states", () => {
     const { rerender } = render(<ConnectionStatus status={{ connected: true, reconnect_required: false, search_console_site: null, ga4_property_id: null }} />);
     expect(screen.getByText("Google connected")).toBeInTheDocument();
