@@ -25,3 +25,66 @@ h3,.source-copy h3,.next-card h3,.privacy-card h3,.finding-title h3{font-family:
   .nav-link,.breadcrumb,.account,.date-card strong,.source-status,.button-connect,.button-primary,.button-secondary,.button-danger,.panel input,.panel select,.chat-form textarea,.metric-card span,.metric-card small,.history-item strong,.history-item span,.finding-title p,.action-box p,.status-pill{font-size:14px}
   .nav-label,.eyebrow,.card-kicker,.owner-label,.date-card span,.step-pill,.panel label,.quiet,.error-box,.inline-warning,.confidence,.evidence-list strong,.evidence-list span,.evidence-list small,.action-box strong,.action-box small,.chat-context,.chat-answer small,.chat-form label,.auth-card small{font-size:12px}
 }
+
+/* Shared button system from the website button design guide. */
+:root{
+  --button-primary-bg:#355b42;
+  --button-primary-hover:#294b35;
+  --button-primary-pressed:#213d2b;
+  --button-secondary-bg:#f8faf6;
+  --button-secondary-border:#dce6d9;
+  --button-secondary-text:#45694d;
+  --button-danger-bg:#fff8f5;
+  --button-danger-border:#efd9d1;
+  --button-danger-text:#9a5541;
+  --button-focus-ring:#284a38;
+}
+button{font-family:inherit}
+.button-primary,.button-secondary,.button-tertiary,.button-danger,.button-connect{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:44px;
+  min-height:44px;
+  padding:10px 16px;
+  border:1px solid transparent;
+  border-radius:7px;
+  font-family:var(--font-ui,Inter,ui-sans-serif,system-ui,sans-serif);
+  font-size:14px;
+  line-height:1.4;
+  text-align:center;
+  text-decoration:none;
+  cursor:pointer;
+  transition:background-color .15s ease,border-color .15s ease,color .15s ease,box-shadow .15s ease;
+}
+.button-primary{background:var(--button-primary-bg);border-color:var(--button-primary-bg);color:#fff;font-weight:600}
+.button-primary:hover:not(:disabled){background:var(--button-primary-hover);border-color:var(--button-primary-hover)}
+.button-primary:active:not(:disabled){background:var(--button-primary-pressed);border-color:var(--button-primary-pressed)}
+.button-secondary,.button-connect{background:var(--button-secondary-bg);border-color:var(--button-secondary-border);color:var(--button-secondary-text);font-weight:500}
+.button-secondary:hover:not(:disabled),.button-connect:hover:not(:disabled){background:#edf2e9;border-color:#c7d8c6;color:#284a38}
+.button-secondary:active:not(:disabled),.button-connect:active:not(:disabled){background:#e5ece2;border-color:#b9cdb8}
+.button-tertiary{background:transparent;border-color:transparent;color:var(--button-secondary-text);font-weight:500}
+.button-tertiary:hover:not(:disabled){background:#edf2e9;color:#284a38}
+.button-tertiary:active:not(:disabled){background:#e5ece2}
+.button-danger{background:var(--button-danger-bg);border-color:var(--button-danger-border);color:var(--button-danger-text);font-weight:600}
+.button-danger:hover:not(:disabled){background:#fbece6;border-color:#e7c4b8;color:#874432}
+.button-danger:active:not(:disabled){background:#f5dfd6;border-color:#ddb3a5}
+.button-primary:disabled,.button-secondary:disabled,.button-tertiary:disabled,.button-connect:disabled,.button-danger:disabled{
+  opacity:1;
+  cursor:not-allowed;
+}
+.button-primary:disabled{background:#617565;border-color:#617565;color:#fff}
+.button-secondary:disabled,.button-connect:disabled{background:#f0f2ef;border-color:#dfe4dc;color:#707c71}
+.button-tertiary:disabled{color:#707c71}
+.button-danger:disabled{background:#f5eeeb;border-color:#e7d9d3;color:#805d54}
+button:focus-visible,.button-primary:focus-visible,.button-secondary:focus-visible,.button-tertiary:focus-visible,.button-danger:focus-visible,.button-connect:focus-visible{
+  outline:3px solid var(--button-focus-ring);
+  outline-offset:2px;
+}
+.nav-link,.history-item{min-height:44px;border:0}
+.nav-link{background:transparent;text-align:left;cursor:pointer}
+.history-item{padding:11px 9px}
+.button-row{flex-wrap:wrap}
+@media(prefers-reduced-motion:reduce){
+  .button-primary,.button-secondary,.button-tertiary,.button-danger,.button-connect{transition:none}
+}
