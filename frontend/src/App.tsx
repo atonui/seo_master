@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { api } from "./api/client";
 import type { GoogleStatus, Owner, ReportDetail, ReportingSettings } from "./api/types";
 import { ConnectionStatus } from "./components/ConnectionStatus";
@@ -13,6 +13,8 @@ export default function App() {
   const [owner, setOwner] = useState<Owner | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState("");
+  const [loginPending, setLoginPending] = useState(false);
+  const loginInProgress = useRef(false);
   const [google, setGoogle] = useState<GoogleStatus | null>(null);
   const [settings, setSettings] = useState<ReportingSettings | null>(null);
   const [report, setReport] = useState<ReportDetail | null>(null);
@@ -38,12 +40,19 @@ export default function App() {
   useEffect(() => { window.location.hash = page; }, [page]);
 
   async function login() {
+    if (loginInProgress.current) return;
+    loginInProgress.current = true;
+    setLoginPending(true);
     setAuthError("");
     try { window.location.assign((await api.connectGoogle()).authorization_url); }
-    catch (error) { setAuthError((error as Error).message); }
+    catch (error) {
+      setAuthError((error as Error).message);
+      loginInProgress.current = false;
+      setLoginPending(false);
+    }
   }
   if (authLoading) return <main className="auth-shell"><p>Checking private workspace…</p></main>;
-  if (!owner) return <main className="auth-shell"><div className="auth-card"><div className="brand-mark">S</div><p className="eyebrow">SPARESTRACKER / GROWTH</p><h1>Your private marketing analyst.</h1><p>Sign in with the Google account configured as this workspace’s owner.</p>{authError && authError !== "Request failed (401)" && <p role="alert" className="error-box">{authError}</p>}<button className="button-primary" onClick={login}>Sign in with Google</button><small>Access is limited to one configured owner account.</small></div></main>;
+  if (!owner) return <main className="auth-shell"><div className="auth-card"><div className="brand-mark">S</div><p className="eyebrow">SPARESTRACKER / GROWTH</p><h1>Your private marketing analyst.</h1><p>Sign in with the Google account configured as this workspace’s owner.</p>{authError && authError !== "Request failed (401)" && <p role="alert" className="error-box">{authError}</p>}<button className="button-primary" onClick={login} disabled={loginPending}>{loginPending ? "Opening Google…" : "Sign in with Google"}</button><small>Access is limited to one configured owner account.</small></div></main>;
 
   const nav: { key: Page; icon: string; label: string }[] = [{ key: "overview", icon: "◫", label: "Overview" }, { key: "reports", icon: "▤", label: "Reports" }, { key: "assistant", icon: "✳", label: "Ask the agent" }, { key: "connections", icon: "⤴", label: "Connections" }];
   return <main className="app-shell">
